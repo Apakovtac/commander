@@ -28,6 +28,18 @@ class BaseLexer
       return false
     end
 
+    local match = self:Assert(str)
+    if match then
+      self:Move(1)
+    end
+    return match
+  end
+
+  function Assert(str)
+    if self:IsFinished() then
+      return false
+    end
+
     return self.message:sub(self.position, self.position + #str - 1) == str
   end
 end
@@ -44,7 +56,6 @@ class Lexer << BaseLexer
     if not self:Match(self.config.PrefixToken) then
       return nil
     end
-    self:Consume() -- consumes the PrefixToken
 
     local alias = self:NextToken()
     local rawStart = self.position + 1
@@ -69,7 +80,6 @@ class Lexer << BaseLexer
   -- Skips the trivial tokens we don't need to know about such as spaces and tabs
   function SkipTrivia()
     if self:Match(" ") or self:Match("\t") then
-      self:Consume()
       return true -- we got a trivial token to skip
     end
 
@@ -93,7 +103,6 @@ class Lexer << BaseLexer
   function NextString()
     local value = ""
 
-    self:Consume() -- moves ahead of that " token we caught earlier from NextToken
     while not self:Match("\"") do
       value ..= self:Consume()
     end
@@ -108,7 +117,7 @@ class Lexer << BaseLexer
 
     repeat
       value ..= self:Consume()
-    until self:Match(" ") or self:Match("\t") or self:IsFinished()
+    until self:Assert(" ") or self:Assert("\t") or self:IsFinished()
 
     return value
   end

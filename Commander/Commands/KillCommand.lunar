@@ -1,0 +1,17 @@
+local Command = require(script.Parent.Parent.Command)
+local PlayerUtils = require(script.Parent.Parent.PlayerUtils)
+
+return Command.new({ "kill" }, "Kill", "Kills a player", |context| do
+  local args = context.Arguments
+  local names = args[1]
+
+  for _, name in pairs(names) do
+    local targets = PlayerUtils.SearchForPlayers(context.Speaker, name)
+
+    for _, target in pairs(targets) do
+      if target.Character then
+        target.Character:BreakJoints()
+      end
+    end
+  end
+end)

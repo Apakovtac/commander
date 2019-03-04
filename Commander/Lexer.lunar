@@ -1,0 +1,117 @@
+class BaseLexer
+  position = 1
+
+  constructor(message)
+    self.message = message
+  end
+
+  function IsFinished()
+    return self.position > #self.message
+  end
+
+  function Move(by)
+    if by == nil then by = 0 end
+
+    self.position += by
+  end
+
+  -- Takes the current character at this position and returns it after moving forward
+  function Consume()
+    local character = self.message:sub(self.position, self.position)
+    self:Move(1)
+    return character
+  end
+
+  -- Returns whether the following string from this position matches the given string
+  function Match(str)
+    if self:IsFinished() then
+      return false
+    end
+
+    return self.message:sub(self.position, self.position + #str - 1) == str
+  end
+end
+
+class Lexer << BaseLexer
+  constructor(message, config)
+    super(message)
+
+    self.config = config
+  end
+
+  -- Tokenizes into { Command: string, Raw: string, Arguments: Array<Array<string>> }
+  function Tokenize()
+    if not self:Match(self.config.PrefixToken) then
+      return nil
+    end
+    self:Consume() -- consumes the PrefixToken
+
+    local alias = self:NextToken()
+    local rawStart = self.position + 1
+    local args = {}
+
+    while not self:IsFinished() do
+      local currentArgs = {}
+
+      repeat
+        table.insert(currentArgs, self:NextToken())
+      until not self:Match(",") -- if there's a comma, then this is still part of the same current argument
+
+      table.insert(args, currentArgs)
+    end
+
+    local rawEnd = self.position
+    local raw = self.message:sub(rawStart, rawEnd)
+
+    return { Alias = alias, Raw = raw, Arguments = args }
+  end
+
+  -- Skips the trivial tokens we don't need to know about such as spaces and tabs
+  function SkipTrivia()
+    if self:Match(" ") or self:Match("\t") then
+      self:Consume()
+      return true -- we got a trivial token to skip
+    end
+
+    return false -- we didn't get any to skip
+  end
+
+  function NextToken()
+    -- skipping trivial tokens
+    repeat
+      local gotTrivia = self:SkipTrivia()
+    until not gotTrivia
+
+    if self:Match("\"") then
+      return self:NextString()
+    end
+
+    return self:NextIdentifier()
+  end
+
+  -- Returns a value preserving spaces and so forth
+  function NextString()
+    local value = ""
+
+    self:Consume() -- moves ahead of that " token we caught earlier from NextToken
+    while not self:Match("\"") do
+      value ..= self:Consume()
+    end
+    self:Consume() -- moves ahead of the " token we didn't get rid of
+
+    return value
+  end
+
+  -- Returns longest possible value until we reach a space or tab
+  function NextIdentifier()
+    local value = ""
+
+    repeat
+      value ..= self:Consume()
+    until self:Match(" ") or self:Match("\t") or self:IsFinished()
+
+    return value
+  end
+end
+
+return Lexer

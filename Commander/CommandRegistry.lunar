@@ -1,0 +1,50 @@
+local Lexer = require (script.Parent.Lexer)
+local CommandContext = require(script.Parent.CommandContext)
+local CommanderConfig = require(script.Parent.CommanderConfig)
+
+class CommandRegistry
+  commands = {}
+
+  function Register(command)
+    table.insert(self.commands, command)
+  end
+
+  function TryInvoke(speaker, message)
+    local userCommand = Lexer.new(message, CommanderConfig):Tokenize()
+
+    -- it didn't begin with our PrefixToken, so we bail out
+    if not userCommand then
+      return
+    end
+
+    local context = CommandContext.new(speaker, userCommand.Alias, userCommand.Raw, userCommand.Arguments)
+    local command = self:GetCommandByAlias(userCommand.Alias)
+    command.Handler(context)
+  end
+
+  function GetAllCommands()
+    return self.commands
+  end
+
+  function GetCommandByAlias(alias)
+    for _, command in pairs(self.commands) do
+      if command:MatchAlias(alias) then
+        return command
+      end
+    end
+
+    return nil
+  end
+
+  function GetCommandByName(name)
+    for _, command in pairs(self.commands) do
+      if command.Name == name then
+        return command
+      end
+    end
+
+    return nil
+  end
+end
+
+return CommandRegistry

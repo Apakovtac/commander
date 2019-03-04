@@ -1,0 +1,10 @@
+{
+  "name": "lunar-commander-example",
+  "servePort": 8000,
+  "partitions": {
+    "commander": {
+      "path": "./out/Commander",
+      "target": "ServerScriptService.Commander"
+    }
+  }
+}

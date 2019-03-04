@@ -1,0 +1,9 @@
+local Command = require(script.Parent.Parent.Command)
+local PlayerUtils = require(script.Parent.Parent.PlayerUtils)
+
+return Command.new({ "msg", "hehe xd" }, "Announcement", "Announces a message to everyone", |context| do
+  local msg = Instance.new("Message", workspace)
+  msg.Text = context.RawMessage
+  wait(5)
+  msg:Destroy()
+end)

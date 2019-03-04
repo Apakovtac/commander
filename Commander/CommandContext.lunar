@@ -1,0 +1,10 @@
+class CommandContext
+  constructor(speaker, alias, raw, args)
+    self.Speaker = speaker
+    self.Alias = alias
+    self.RawMessage = raw
+    self.Arguments = args
+  end
+end
+
+return CommandContext

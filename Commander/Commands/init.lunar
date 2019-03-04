@@ -1,0 +1,10 @@
+local CommandRegistry = require(script.Parent.CommandRegistry)
+
+local commandRegistry = CommandRegistry.new()
+
+for _, commandModule in pairs(script:GetChildren()) do
+  local command = require(commandModule)
+  commandRegistry:Register(command)
+end
+
+return commandRegistry

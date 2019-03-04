@@ -1,0 +1,4 @@
+local Players = game:GetService("Players")
+local commandRegistry = require(script.Parent.Commands)
+
+Players.PlayerAdded:Connect(|p| p.Chatted:Connect(|message| commandRegistry:TryInvoke(p, message)))

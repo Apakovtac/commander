@@ -1,0 +1,2 @@
+root_dirs = { "Commander" }
+out_dir = "out"

@@ -1,0 +1,44 @@
+local Players = game:GetService("Players")
+
+class PlayerUtils
+  static function GetPlayerByName(name)
+    for _, player in pairs(Players:GetPlayers()) do
+      if player.Name:lower() == name:lower() then
+        return player
+      end
+    end
+
+    return nil
+  end
+
+  static function Filter(predicate)
+    local players = {}
+
+    for _, p in pairs(Players:GetPlayers()) do
+      if predicate(p) then
+        table.insert(players, p)
+      end
+    end
+
+    return players
+  end
+
+  static function SearchForPlayers(speaker, name)
+    local searchers = {
+      ["me"]      = || { speaker },
+      ["all"]     = || Players:GetPlayers(),
+      ["others"]  = || PlayerUtils.Filter(|p| p ~= speaker),
+      ["random"]  = || { Players:GetPlayers()[math.random(1, #Players:GetPlayers())] },
+      ["randoms"] = || PlayerUtils.Filter(|| math.random() >= 0.5)
+    }
+
+    local searcher = searchers[name:lower()]
+    if searcher then
+      return searcher()
+    end
+
+    return { PlayerUtils.GetPlayerByName(name) }
+  end
+end
+
+return PlayerUtils

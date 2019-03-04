@@ -1,0 +1,20 @@
+class Command
+  constructor(aliases, name, desc, handler)
+    self.Aliases = aliases
+    self.Name = name
+    self.Description = desc
+    self.Handler = handler
+  end
+
+  function MatchAlias(usedAlias)
+    for _, alias in pairs(self.Aliases) do
+      if alias:lower() == usedAlias:lower() then
+        return true
+      end
+    end
+
+    return false
+  end
+end
+
+return Command

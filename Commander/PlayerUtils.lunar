@@ -3,7 +3,7 @@ local Players = game:GetService("Players")
 class PlayerUtils
   static function GetPlayerByName(name)
     for _, player in pairs(Players:GetPlayers()) do
-      if player.Name:lower() == name:lower() then
+      if player.Name:lower():sub(1, #name) == name:lower() then
         return player
       end
     end

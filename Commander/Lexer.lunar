@@ -117,7 +117,7 @@ class Lexer << BaseLexer
 
     repeat
       value ..= self:Consume()
-    until self:Assert(" ") or self:Assert("\t") or self:IsFinished()
+    until self:Assert(" ") or self:Assert("\t") or self:Assert(",") or self:IsFinished()
 
     return value
   end

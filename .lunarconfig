@@ -1,2 +1,2 @@
-root_dirs = { "Commander" }
+include = { "Commander" }
 out_dir = "out"

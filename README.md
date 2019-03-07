@@ -14,9 +14,9 @@ The `Lexer` class attempts to group your message based on its syntax. If you wri
 
 By default, we have a `@` prefix which signals to Commander that your message invokes a command.
 
-The first value is the alias, which can be in the following format: `test` or `"hello world"`, both of which is one alias.
+The first object is the alias, which can be in the following format: `test` or `"hello world"`, both of which is one alias.
 
-Although every arguments in Commander is an array of objects, we support multiple objects in one single argument, which takes the syntax: `one, two, three, four`. This is all one argument that has four objects.
+Although every arguments in Commander is an array of objects, we support multiple objects in one single argument, which takes the syntax: `one, two, three, four`. This is all one argument that has four objects. So with `@teleport one, two, "player three", four me`, its first object: `teleport`, first argument is an object which is an array of objects: `one, two, "player three", four`, and second argument is one object: `me`.
 
 ### Examples
 So these are valid commands for Commander: `@kill others`, `@"send message" random "hehe lol"`, `@teleport one, two, "player three", four me`.
